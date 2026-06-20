@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: YOUR_GITHUB_USERNAME/YOUR_REPO_NAME   # e.g. john/amara-silva-law
+  repo: Chanuka-ChandraYapa/curly-happiness   # e.g. john/amara-silva-law
   branch: main
 
 # Where CMS-uploaded images are stored in the repo
@@ -8,7 +8,7 @@ media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
 # Use Git Gateway for auth — works with GitHub Pages
-site_url: https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME
+site_url: https://Chanuka-ChandraYapa/curly-happiness
 
 collections:
   - name: "articles"
