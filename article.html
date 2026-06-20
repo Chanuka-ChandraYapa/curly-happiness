@@ -110,6 +110,17 @@
 </footer>
 
 <script>
+  function getBasePath() {
+    const path = window.location.pathname;
+    // If deployed at root: /article.html → ""
+    // If deployed in subfolder: /repo-name/article.html → "/repo-name"
+    const parts = path.split('/');
+    if (parts.length <= 2) return '';
+    return '/' + parts.slice(1, -1).join('/');
+  }
+
+  const basePath = getBasePath();
+
   function formatDate(dateStr) {
     if (!dateStr) return '';
     const d = new Date(dateStr);
@@ -140,11 +151,20 @@
   async function loadArticle() {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
-    if (!slug) { window.location.href = 'index.html#articles'; return; }
+    
+    if (!slug) { 
+      window.location.href = 'index.html#articles'; 
+      return; 
+    }
 
+    const articlePath = `${basePath}/articles/${slug}.md`;
+    
     try {
-      const res = await fetch(`articles/${slug}.md`);
-      if (!res.ok) throw new Error('Not found');
+      const res = await fetch(articlePath);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: Could not find articles/${slug}.md`);
+      }
+      
       const markdown = await res.text();
       const { meta, body } = parseFrontmatter(markdown);
 
@@ -161,7 +181,10 @@
       document.getElementById('articleContent').style.display = 'block';
     } catch (err) {
       console.error('Error loading article:', err);
-      document.getElementById('loading').innerHTML = 'Article not found. <a href="index.html#articles" style="color:var(--gold)">Return to writing →</a>';
+      const errorMsg = err.message.includes('HTTP 404') 
+        ? `Article not found (${slug}.md). Make sure it's published in the CMS.`
+        : `Error: ${err.message}`;
+      document.getElementById('loading').innerHTML = `<p style="color: var(--slate)">${errorMsg}</p><a href="index.html#articles" style="color:var(--gold);text-decoration:none">Return to writing →</a>`;
     }
   }
 
