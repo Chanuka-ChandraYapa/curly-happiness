@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -38,6 +39,8 @@
     .article-meta { display: flex; gap: 24px; align-items: center; }
     .article-date, .article-author { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(247,244,239,0.4); }
     .article-body { padding: 72px 0 100px; }
+
+    /* Markdown rendering styles */
     .article-body p { margin-bottom: 24px; line-height: 1.85; color: #2C3A4A; font-size: 1.02rem; }
     .article-body h2 { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--navy); margin: 48px 0 20px; line-height: 1.3; }
     .article-body h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; color: var(--navy); margin: 36px 0 16px; }
@@ -45,6 +48,16 @@
     .article-body blockquote p { font-family: var(--serif); font-size: 1.25rem; font-style: italic; color: var(--navy); margin: 0; line-height: 1.65; }
     .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 24px; color: #2C3A4A; }
     .article-body li { margin-bottom: 8px; line-height: 1.8; }
+    .article-body img { max-width: 100%; height: auto; margin: 32px 0; border-radius: 2px; }
+    .article-body video { max-width: 100%; height: auto; margin: 32px 0; }
+    .article-body code { background: rgba(201,169,110,0.08); padding: 2px 6px; font-family: 'Monaco', 'Courier', monospace; font-size: 0.9em; color: var(--navy); }
+    .article-body pre { background: #F0EBE3; padding: 24px; margin: 32px 0; overflow-x: auto; border-left: 2px solid var(--gold); }
+    .article-body pre code { background: none; padding: 0; color: var(--ink); }
+    .article-body strong { font-weight: 500; }
+    .article-body em { font-style: italic; }
+    .article-body a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold); transition: color 0.2s; }
+    .article-body a:hover { color: var(--navy); }
+
     .back-link { display: inline-flex; align-items: center; gap: 10px; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
     .back-link:hover { color: var(--navy); }
     footer { background: #060E18; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; }
@@ -103,18 +116,25 @@
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  // Simple markdown-to-HTML converter
-  function markdownToHTML(md) {
-    return md
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/^(?!<[h|u|b|l])(.+)$/gm, (m) => m.startsWith('<') ? m : `<p>${m}</p>`);
+  function parseFrontmatter(text) {
+    const match = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (!match) return { meta: {}, body: text };
+
+    const meta = {};
+    match[1].split('\n').forEach(line => {
+      const colon = line.indexOf(':');
+      if (colon === -1) return;
+      const key = line.slice(0, colon).trim();
+      let val = line.slice(colon + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      if (val === 'true') val = true;
+      if (val === 'false') val = false;
+      meta[key] = val;
+    });
+
+    return { meta, body: match[2].trim() };
   }
 
   async function loadArticle() {
@@ -123,19 +143,24 @@
     if (!slug) { window.location.href = 'index.html#articles'; return; }
 
     try {
-      const res = await fetch(`articles/${slug}.json`);
+      const res = await fetch(`articles/${slug}.md`);
       if (!res.ok) throw new Error('Not found');
-      const article = await res.json();
+      const markdown = await res.text();
+      const { meta, body } = parseFrontmatter(markdown);
 
-      document.title = `${article.title} — Amara Silva`;
-      document.getElementById('artCategory').textContent = article.category || 'Commentary';
-      document.getElementById('artTitle').textContent = article.title;
-      document.getElementById('artDate').textContent = formatDate(article.date);
-      document.getElementById('artBody').innerHTML = markdownToHTML(article.body || '');
+      document.title = `${meta.title || 'Article'} — Amara Silva`;
+      document.getElementById('artCategory').textContent = meta.category || 'Commentary';
+      document.getElementById('artTitle').textContent = meta.title || 'Untitled';
+      document.getElementById('artDate').textContent = formatDate(meta.date);
+
+      // Render markdown to HTML using marked.js
+      const html = marked.parse(body);
+      document.getElementById('artBody').innerHTML = html;
 
       document.getElementById('loading').style.display = 'none';
       document.getElementById('articleContent').style.display = 'block';
-    } catch {
+    } catch (err) {
+      console.error('Error loading article:', err);
       document.getElementById('loading').innerHTML = 'Article not found. <a href="index.html#articles" style="color:var(--gold)">Return to writing →</a>';
     }
   }
