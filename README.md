@@ -1,8 +1,3 @@
-# Amara Silva — Lawyer Portfolio Site
-
-A static portfolio site with Decap CMS for article publishing. No server required. Deploys to GitHub Pages.
-
----
 
 ## Quick setup (15 minutes)
 
