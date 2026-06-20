@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article — Amara Silva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0B1929; --cream: #F7F4EF; --gold: #C9A96E;
+      --slate: #6B7585; --ink: #1A2535; --rule: rgba(201,169,110,0.35);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream); color: var(--ink);
+      font-family: var(--sans); font-weight: 300;
+      font-size: 16px; line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: var(--cream); border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; letter-spacing: 0.08em; color: var(--navy); text-decoration: none; }
+    .nav-back { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--navy); }
+    .article-hero { background: var(--navy); padding: 80px 0 72px; }
+    .container { max-width: 780px; margin: 0 auto; padding: 0 48px; }
+    .article-category { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; display: block; }
+    .article-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--cream); line-height: 1.15; margin-bottom: 28px; }
+    .article-meta { display: flex; gap: 24px; align-items: center; }
+    .article-date, .article-author { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(247,244,239,0.4); }
+    .article-body { padding: 72px 0 100px; }
+    .article-body p { margin-bottom: 24px; line-height: 1.85; color: #2C3A4A; font-size: 1.02rem; }
+    .article-body h2 { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--navy); margin: 48px 0 20px; line-height: 1.3; }
+    .article-body h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; color: var(--navy); margin: 36px 0 16px; }
+    .article-body blockquote { border-left: 2px solid var(--gold); padding: 4px 0 4px 28px; margin: 40px 0; }
+    .article-body blockquote p { font-family: var(--serif); font-size: 1.25rem; font-style: italic; color: var(--navy); margin: 0; line-height: 1.65; }
+    .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 24px; color: #2C3A4A; }
+    .article-body li { margin-bottom: 8px; line-height: 1.8; }
+    .back-link { display: inline-flex; align-items: center; gap: 10px; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+    .back-link:hover { color: var(--navy); }
+    footer { background: #060E18; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-name { font-family: var(--serif); color: rgba(247,244,239,0.4); font-size: 0.95rem; }
+    .footer-note { font-size: 0.72rem; letter-spacing: 0.1em; color: rgba(247,244,239,0.2); }
+    #loading { text-align: center; padding: 100px 0; color: var(--slate); font-style: italic; font-family: var(--serif); font-size: 1.1rem; }
+    @media (max-width: 600px) { nav { padding: 0 24px; } .container { padding: 0 24px; } footer { flex-direction: column; gap: 8px; text-align: center; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Amara Silva</a>
+  <a href="index.html#articles" class="nav-back">
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+      <path d="M5.5 9L1 5M1 5L5.5 1M1 5H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    All writing
+  </a>
+</nav>
+
+<div id="loading">Loading article…</div>
+<div id="articleContent" style="display:none">
+  <div class="article-hero">
+    <div class="container">
+      <span class="article-category" id="artCategory"></span>
+      <h1 class="article-title" id="artTitle"></h1>
+      <div class="article-meta">
+        <span class="article-date" id="artDate"></span>
+        <span class="article-author">Amara Silva</span>
+      </div>
+    </div>
+  </div>
+  <div class="article-body">
+    <div class="container">
+      <div id="artBody"></div>
+      <br><br>
+      <a href="index.html#articles" class="back-link">
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+          <path d="M5.5 9L1 5M1 5L5.5 1M1 5H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to all writing
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-name">Amara Silva — Attorney at Law</span>
+  <span class="footer-note">© 2025 · Colombo, Sri Lanka</span>
+</footer>
+
+<script>
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  // Simple markdown-to-HTML converter
+  function markdownToHTML(md) {
+    return md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[h|u|b|l])(.+)$/gm, (m) => m.startsWith('<') ? m : `<p>${m}</p>`);
+  }
+
+  async function loadArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    if (!slug) { window.location.href = 'index.html#articles'; return; }
+
+    try {
+      const res = await fetch(`articles/${slug}.json`);
+      if (!res.ok) throw new Error('Not found');
+      const article = await res.json();
+
+      document.title = `${article.title} — Amara Silva`;
+      document.getElementById('artCategory').textContent = article.category || 'Commentary';
+      document.getElementById('artTitle').textContent = article.title;
+      document.getElementById('artDate').textContent = formatDate(article.date);
+      document.getElementById('artBody').innerHTML = markdownToHTML(article.body || '');
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('articleContent').style.display = 'block';
+    } catch {
+      document.getElementById('loading').innerHTML = 'Article not found. <a href="index.html#articles" style="color:var(--gold)">Return to writing →</a>';
+    }
+  }
+
+  loadArticle();
+</script>
+</body>
+</html>
