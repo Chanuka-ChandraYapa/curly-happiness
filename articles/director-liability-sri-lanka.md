@@ -1,8 +1,10 @@
 ---
 title: The Evolving Standard of Director Liability in Sri Lanka
-category: Legal Update
+category: Case Analysis
 date: 2025-01-15
-excerpt: Recent Supreme Court decisions have begun to tighten the standard of care expected of company directors, with significant implications for corporate governance practice.
+excerpt: Recent Supreme Court decisions have begun to tighten the standard of
+  care expected of company directors, with significant implications for
+  corporate governance practice.
 published: true
 ---
 
