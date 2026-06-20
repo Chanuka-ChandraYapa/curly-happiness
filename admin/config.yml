@@ -1,0 +1,52 @@
+# -------------------------------------------------------------------
+# STEP 1: After setting up DecapBridge (decapbridge.com), replace the
+# three lines below with the values DecapBridge gives you.
+# -------------------------------------------------------------------
+backend:
+  name: git-gateway
+  repo: Chanuka-ChandraYapa/curly-happiness   # e.g. chanuka/amara-silva-law
+  branch: main
+  identity_url: https://auth.decapbridge.com/sites/e053a2f9-8b9c-4f52-8501-bada054ea69f
+  gateway_url: https://gateway.decapbridge.com
+
+# Optional: nicer commit messages showing who published
+commit_messages:
+  create: 'Add article "{{slug}}" via CMS'
+  update: 'Update article "{{slug}}" via CMS'
+  delete: 'Delete article "{{slug}}" via CMS'
+  uploadMedia: 'Upload "{{path}}" via CMS'
+  deleteMedia: 'Delete "{{path}}" via CMS'
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+# Enable PKCE fields (optional, recommended)
+auth:
+  email_claim: email
+  first_name_claim: first_name
+  last_name_claim: last_name
+  avatar_url_claim: avatar_url
+
+# Better Decap + Bridge logo (optional)
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Add site links in Decap CMS (optional)
+site_url: https://chanuka-chandrayapa.github.io
+
+collections:
+  - name: "articles"
+    label: "Articles"
+    label_singular: "Article"
+    folder: "articles"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select",
+          options: ["Commentary", "Case Analysis", "Legal Update", "Opinion", "Publications"],
+          default: "Commentary" }
+      - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Excerpt (shown on homepage — 1–2 sentences)", name: "excerpt", widget: "text" }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Published", name: "published", widget: "boolean", default: true }

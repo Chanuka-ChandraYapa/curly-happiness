@@ -1,0 +1,4 @@
+Place a portrait photo named profile.jpg in this folder.
+
+Recommended: a professional headshot, at least 800x1000px, in JPEG format.
+The image is displayed on the right half of the hero section.
