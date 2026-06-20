@@ -1,7 +1,21 @@
+# -------------------------------------------------------------------
+# STEP 1: After setting up DecapBridge (decapbridge.com), replace the
+# three lines below with the values DecapBridge gives you.
+# -------------------------------------------------------------------
 backend:
-  name: github
-  repo: Chanuka-ChandraYapa/curly-happiness
+  name: git-gateway
+  repo: Chanuka-ChandraYapa/curly-happiness   # e.g. chanuka/amara-silva-law
   branch: main
+  identity_url: https://auth.decapbridge.com/sites/e053a2f9-8b9c-4f52-8501-bada054ea69f
+  gateway_url: https://gateway.decapbridge.com
+
+# Optional: nicer commit messages showing who published
+commit_messages:
+  create: 'Add article "{{slug}}" via CMS'
+  update: 'Update article "{{slug}}" via CMS'
+  delete: 'Delete article "{{slug}}" via CMS'
+  uploadMedia: 'Upload "{{path}}" via CMS'
+  deleteMedia: 'Delete "{{path}}" via CMS'
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
